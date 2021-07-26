@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: the-project
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: the-project
+    spec:
+      containers:
+      - name: the-project
+        image: zorran/the-project:latest
+        imagePullPolicy: Always
