@@ -1,5 +1,6 @@
 package com.epam.project.controllers;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.epam.project.data.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/product/2")
 @Slf4j
+@XRayEnabled
 public class ProductController {
 
     @PutMapping("/add")

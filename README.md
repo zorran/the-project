@@ -1,5 +1,8 @@
 # the-project
 
+#AWS console
+k.shnyrkov@epam.com DAG7PE[XTF+*Vi=
+
 docker build --tag the-project .
 
 docker save -o ./the-project.tar the-project
