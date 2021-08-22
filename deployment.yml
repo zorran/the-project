@@ -13,3 +13,14 @@ spec:
       - name: the-project
         image: zorran/the-project:latest
         imagePullPolicy: Always
+      - env:
+          - name: DYNAMO_USER
+            valueFrom:
+              secretKeyRef:
+                name: dynamodb-seciruty
+                key: amazon.aws.accesskey
+          - name: DYNAMO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: dynamodb-seciruty
+                key: amazon.aws.secretkey
