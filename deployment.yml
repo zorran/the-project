@@ -1,9 +1,14 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: the-project
+  labels:
+    app: the-project
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: the-project
   template:
     metadata:
       labels:
@@ -11,16 +16,28 @@ spec:
     spec:
       containers:
       - name: the-project
-        image: zorran/the-project:latest
+        image: zorran/the-project:6
         imagePullPolicy: Always
-      - env:
-          - name: DYNAMO_USER
-            valueFrom:
-              secretKeyRef:
-                name: dynamodb-seciruty
-                key: amazon.aws.accesskey
-          - name: DYNAMO_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: dynamodb-seciruty
-                key: amazon.aws.secretkey
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: the-project
+  labels:
+    app: the-project
+spec:
+  containers:
+  - name: the-project
+    image: zorran/the-project:6
+    env:
+       - name: DYNAMO_USER
+         valueFrom:
+           secretKeyRef:
+             name: dynamodb-seciruty
+             key: amazon.aws.accesskey
+       - name: DYNAMO_PASSWORD
+         valueFrom:
+           secretKeyRef:
+             name: dynamodb-seciruty
+             key: amazon.aws.secretkey

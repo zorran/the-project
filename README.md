@@ -1,20 +1,5 @@
 # the-project
 
-#AWS console
-# k.shnyrkov@epam.com   DAG7PE[XTF+*Vi=
-# root.k.shnyrkov       )@XHkURd!2+a[f*
-# service.k.shnyrkov    L]oc1E'hAqcI'gr
-# zorran                Z^6FNPcR)zQ1G2Q
-
-# API auth
-Access key          IDAKIAT2UGU7XQJHSFX6AW
-Secret access key   lXiWK8hOYlLl65XYZinqYSkV05FneQRdiQwQcp01
-Base64              bFhpV0s4aE9ZbExsNjVYWVppbnFZU2tWMDVGbmVRUmRpUXdRY3AwMQ
-
-zorran (access key and secret key):
-AKIAT2UGU7XQMZAVUXY2
-8h3+EjFv4pKQ5CEHlcSfNz+pk0L6D7qV5WjG3sSL
-
 # java
 spring
 
@@ -62,6 +47,10 @@ http://ec2-3-141-194-95.us-east-2.compute.amazonaws.com:8080/
 kubectl set image deployment/the-project the-project=zorran/the-project:latest
 kubectl rollout restart deployment/the-project
 kubectl rollout history deployment/the-project
+
+собрать докер локально, указать увеличившивающееся номер образа
+запушать докер в докер хаб
+на ec2(medium) выполнить kubectl apply -f deployment.yml
 
 #Secret
 kubectl create secret generic dynamodb-seciruty --from-literal=amazon.aws.accesskey=AKIAT2UGU7XQMZAVUXY2 --from-literal=amazon.aws.secretkey=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
