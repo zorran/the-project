@@ -41,3 +41,14 @@ spec:
            secretKeyRef:
              name: dynamodb-seciruty
              key: amazon.aws.secretkey
+       - name: AWS_ACCESS_KEY
+         valueFrom:
+           secretKeyRef:
+             name: dynamodb-seciruty
+             key: amazon.aws.accesskey
+       - name: AWS_SECRET_KEY
+         valueFrom:
+           secretKeyRef:
+             name: dynamodb-seciruty
+             key: amazon.aws.secretkey
+

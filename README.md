@@ -77,9 +77,9 @@ kubectl create secret generic dynamodb-seciruty --from-literal=amazon.aws.access
 minikube start
 git clone https://github.com/zorran/the-project.git
 зайти в the-project
+kubectl create secret generic dynamodb-seciruty --from-literal=amazon.aws.accesskey=AKIAT2UGU7XQMZAVUXY2 --from-literal=amazon.aws.secretkey=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
 kubectl apply -f deployment.yml
 kubectl expose deployment the-project --type=NodePort --port=8080
-kubectl create secret generic dynamodb-seciruty --from-literal=amazon.aws.accesskey=AKIAT2UGU7XQMZAVUXY2 --from-literal=amazon.aws.secretkey=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
 minikube service the-project
 kubectl port-forward --address 0.0.0.0 service/the-project 7080:8080
 
