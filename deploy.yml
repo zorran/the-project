@@ -1,0 +1,116 @@
+{
+  "Resources": {
+    "DatabaseSecret": {
+      "Type": "AWS::SecretsManager::Secret",
+      "Properties": {
+        "Name": "dynamodb-seciruty",
+        "SecretString": "{\"amazon.aws.accesskey\":\"AKIAT2UGU7XQMZAVUXY2\",\"amazon.aws.secretkey\":\"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\"}"
+      }
+    },
+    "Ec2Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Metadata": {
+        "AWS::CloudFormation::Init": {
+          "configSets": {
+            "Install": [
+                "Install", "Configure"
+            ]
+          },
+          "Install": {
+            "packages": {
+              "yum": {
+                "java-1.8.0-openjdk-devel": [ ],
+                "git": [ ],
+                "docker": [ ]
+              }
+            }
+          },
+          "Configure": {
+            "commands": {
+              "com_1_1": {
+                "command": "sudo service docker start"
+              },
+              "com_1_2": {
+                "command": "sudo usermod -a -G docker ec2-user"
+              },
+              "com_1_3": {
+                "command": "sudo chmod 666 /var/run/docker.sock"
+              },
+              "com_2_1": {
+                "command": "curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl"
+              },
+              "com_2_2": {
+                "command": "chmod +x ./kubectl"
+              },
+              "com_2_3": {
+                "command": "sudo mv ./kubectl /usr/local/bin/kubectl"
+              },
+              "com_3_1": {
+                "command": "curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube"
+              },
+              "com_3_2": {
+                "command": "sudo mkdir -p /usr/local/bin/"
+              },
+              "com_3_3": {
+                "command": "sudo install minikube /usr/local/bin/"
+              }
+            }
+          }
+        }
+      },
+      "Properties": {
+        "SecurityGroups": [
+          {
+            "Ref": "InstanceSecurityGroup"
+          }
+        ],
+        "KeyName": "k.shnyrkov",
+        "ImageId": "resolve:ssm:/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+        "InstanceType": "t2.medium",
+        "UserData": { "Fn::Base64":
+                        { "Fn::Join": [ "", [
+                            "#!/bin/bash -xe\n",
+                            "# Install the files and packages from the metadata\n",
+                            "/opt/aws/bin/cfn-init -v ",
+                            "         --stack ", { "Ref": "AWS::StackName" },
+                            "         --resource Ec2Instance ",
+                            "         --configsets Install ",
+                            "         --region ", { "Ref": "AWS::Region" }, "\n"
+                        ] ] }
+        }
+      }
+    },
+    "InstanceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enable SSH access via port 22",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 22,
+            "ToPort": 22,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 8080,
+            "ToPort": 8080,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 7080,
+            "ToPort": 7080,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 5432,
+            "ToPort": 5432,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    }
+  }
+}
