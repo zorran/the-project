@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: the-project
-        image: zorran/the-project:7
+        image: zorran/the-project:latest
         imagePullPolicy: Always
 
 ---
@@ -29,7 +29,7 @@ metadata:
 spec:
   containers:
   - name: the-project
-    image: zorran/the-project:7
+    image: zorran/the-project:latest
     env:
        - name: DYNAMO_USER
          valueFrom:
