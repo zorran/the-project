@@ -85,18 +85,20 @@ kubectl port-forward --address 0.0.0.0 service/the-project 7080:8080
 
 
 # таблицы
+create SEQUENCE carts_seq increment by 1;
+
+create SEQUENCE products_seq increment by 1;
+
 CREATE TABLE products (
-id numeric(12,0),
+id numeric(12,0) PRIMARY KEY NOT NULL,
 name varchar(256),
-cartId numeric(12,0),
-PRIMARY KEY (id)
-)
+cart_id numeric(12,0)
+);
 
 CREATE TABLE carts (
-id numeric(12,0),
-name varchar(256),
-PRIMARY KEY (id)
-)
+id numeric(12,0) PRIMARY KEY NOT NULL,
+name varchar(256)
+);
 
 #aws sqs
 {

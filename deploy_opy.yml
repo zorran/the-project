@@ -1,0 +1,129 @@
+{
+  "Resources": {
+    "Ec2Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Metadata": {
+        "AWS::CloudFormation::Init": {
+          "configSets": {
+            "Install": [
+                "Install", "Configure"
+            ]
+          },
+          "Install": {
+            "packages": {
+              "yum": {
+                "java-1.8.0-openjdk-devel": [],
+                "docker": []
+              }
+            }
+          },
+          "Configure": {
+            "commands": {
+              "com_1_1": {
+                "command" : "sudo service docker start"
+              },
+              "com_1_2": {
+                "command": "sudo usermod -a -G docker ec2-user"
+              },
+              "com_1_3": {
+                "command": "sudo chmod 666 /var/run/docker.sock"
+              },
+              "com_2_1": {
+                "command": "curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl"
+              },
+              "com_2_2": {
+                "command": "chmod +x ./kubectl"
+              },
+              "com_2_3": {
+                "command": "sudo mv ./kubectl /usr/local/bin/kubectl"
+              },
+              "com_3_1": {
+                "command": "curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube"
+              },
+              "com_3_2": {
+                "command": "sudo mkdir -p /usr/local/bin/"
+              },
+              "com_3_3": {
+                "command": "sudo install minikube /usr/local/bin/"
+              },
+              "com_3_4": {
+                "command": "minikube start"
+              },
+              "com_4_1": {
+                "command": "kubectl create deployment the-project --image=zorran/the-project:latest"
+              },
+              "com_4_2": {
+                "command": "kubectl expose deployment the-project --type=NodePort --port=8080"
+              },
+              "com_4_3": {
+                "command": "minikube service the-project"
+              },
+              "com_4_4": {
+                "command": "kubectl port-forward --address 0.0.0.0 service/the-project 7080:8080"
+              }
+            }
+          }
+        }
+      },
+      "Properties": {
+        "SecurityGroups": [
+          {
+            "Ref": "InstanceSecurityGroup"
+          }
+        ],
+        "KeyName": "k.shnyrkov",
+        "ImageId": "resolve:ssm:/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2",
+        "InstanceType": "t2.medium",
+        "UserData": { "Fn::Base64":
+                        { "Fn::Join": [ "", [
+                            "#!/bin/bash -xe\n",
+                            "# Install the files and packages from the metadata\n",
+                            "/opt/aws/bin/cfn-init -v ",
+                            "         --stack ", { "Ref": "AWS::StackName" },
+                            "         --resource Ec2Instance ",
+                            "         --configsets Install ",
+                            "         --region ", { "Ref": "AWS::Region" }, "\n"
+                        ] ] }
+        }
+      }
+    },
+    "InstanceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enable SSH access via port 22",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 22,
+            "ToPort": 22,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 8080,
+            "ToPort": 8080,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "MyDB": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "DBInstanceIdentifier": "mydbinstance",
+        "DBName": "mydb",
+        "DBInstanceClass": "db.t3.micro",
+        "AllocatedStorage": 20,
+        "Engine": "MySQL",
+        "EngineVersion": "8.0.16",
+        "MasterUsername": "master",
+        "MasterUserPassword": "mastersql",
+        "VPCSecurityGroups": [
+          {
+            "Ref": "InstanceSecurityGroup"
+          }
+        ]
+      }
+    }
+  }
+}

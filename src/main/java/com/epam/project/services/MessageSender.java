@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MessageSender {
 
-    //private static final String QUEUE_NAME = "https://sqs.us-east-1.amazonaws.com/XXXXXXX/testQueue";
     private static final String QUEUE_NAME = "https://sqs.us-east-2.amazonaws.com/263349140960/the-project-sqs";
 
     @Autowired

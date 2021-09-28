@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: the-project
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: the-project
+    spec:
+      containers:
+      - name: the-project
+        image: zorran/the-project:latest
+        imagePullPolicy: Always
+      - env:
+          - name: DYNAMO_USER
+            valueFrom:
+              secretKeyRef:
+                name: dynamodb-seciruty
+                key: amazon.aws.accesskey
+          - name: DYNAMO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: dynamodb-seciruty
+                key: amazon.aws.secretkey
+kind: Pod
+metadata:
+  name: the-project-pod
+spec:
+  containers:
+  - name
