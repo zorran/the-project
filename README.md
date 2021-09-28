@@ -4,7 +4,7 @@ ssh -i "k.shnyrkov.pem" ec2-user@ec2-3-144-80-244.us-east-2.compute.amazonaws.co
 # java
 spring
 
-docker build --tag the-project .
+docker build --tag zorran/the-project .
 
 docker save -o ./the-project.tar the-project
 
